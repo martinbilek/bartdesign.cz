@@ -14,14 +14,3 @@
 
   </div>
 </template>
-
-<style>
-.mojetransition {
-  transition: opacity .4s ease-out;
-  @apply opacity-0;
-}
-.mojetransition:hover {
-  transition: opacity .4s ease-out;
-  @apply opacity-100;
-}
-</style>

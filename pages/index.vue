@@ -1,15 +1,15 @@
 <template>
   <div>
     <div class="flex flex-wrap font-mono">
-
       <div
         class="relative w-full md:w-1/2 p-4"
-        v-for="item in projects"
-        :key="item.name"
+        v-for="(item, index) in projects"
+        :key="index"
+        @click="selectProject(index)"
       >
         <div class="absolute mojetransition inset-0 rounded-xl bg-gray-700 bg-opacity-50 py-8 text-white m-4">
           <div class="absolute bottom-0 mb-4 ml-4">
-            <div class="mb-2"><h1 class="text-white bg-black text-xs p-2 py-1 inline">. {{ item.name }} .</h1></div>
+            <div class="mb-2"><h1 class="text-white bg-black text-xs p-2 py-1 inline">. {{ item.slug }} .</h1></div>
             <div v-if="item.title" class=""><p class="text-black bg-white text-xs p-2 py-1 inline">{{ item.title }}</p></div>
             <div v-if="item.website"><p class="text-black bg-white text-xs p-2 py-1 inline"><a :href="item.website">{{ item.website }}</a></p></div>
           </div>
@@ -19,86 +19,66 @@
 
     </div>
 
-    <div class="fixed inset-0 overflow-scroll bg-black bg-opacity-50 flex">
-      aaa
+    <div
+      class="fixed inset-0 overflow-scroll bg-black bg-opacity-75"
+      v-if="selectedProjectIndex != null && selectedProjectIndex >= 0 && selectedProjectIndex <= projects.length"
+      @click="selectedProjectIndex = null"
+    >
+      <div class="absolute inset-0 m-2 md:m-12 md:mb-40"> <!--@click="$event.stopPropagation()"-->
+        <div class="grid grid-cols-12 md:h-full">
+          <div class="col-span-12 text-center">
+            <img class="rounded-xl object-contain inline md:h-full" :src="projects[selectedProjectIndex].imgs[selectedImageIndex]" />
+          </div>
+        </div>
+        <div class="text-center h-20">
+          <div class="p-2">
+            <img
+              class="h-16 inline m-1 border border-white opacity-75 hover:opacity-100"
+              v-for="(img, index) in projects[selectedProjectIndex].imgs"
+              :key="index"
+              :src="img"
+              @click="selectedImageIndex = index; $event.stopPropagation();"
+            />
+          </div>
+        </div>
+
+      </div>
     </div>
   </div>
 </template>
 
+<style>
+.mojetransition {
+  transition: opacity .4s ease-out;
+  @apply opacity-0;
+}
+.mojetransition:hover {
+  transition: opacity .4s ease-out;
+  @apply opacity-100;
+}
+</style>
+
 <script>
 export default {
 
+  async asyncData ({ $content }) {
+    const projects = await $content('projects').fetch();
+    return {
+      projects
+    }
+  },
+
   data: () => ({
-    projects: [
-      {
-        name: 'Ragwear T-Shirts',
-        title: 'Corporate identity - logotype',
-        website: 'https://www.ragwear.com/cz',
-        imgs: [
-          'box2.png'
-        ]
-      },
-      {
-        name: 'iyengar yoga institute',
-        title: 'consectetur adipiscing elit',
-        website: 'https://iy.yoga/',
-        imgs: [
-          'box1.png'
-        ]
-      },
-      {
-        name: 'living flowers',
-        title: 'consectetur adipiscing elit',
-        website: '',
-        imgs: [
-          'box4.png'
-        ]
-      },
-      {
-        name: 'bla bla bla',
-        title: 'dolore magna aliqua. Ut enim a',
-        website: '',
-        imgs: [
-          'box3.png'
-        ]
-      },
-      {
-        name: 'bla bla bla',
-        title: 'dolore magna aliqua. Ut enim a',
-        website: '',
-        imgs: [
-          'box3.png'
-        ]
-      },
-      {
-        name: 'bla bla bla',
-        title: 'dolore magna aliqua. Ut enim a',
-        website: '',
-        imgs: [
-          'box3.png'
-        ]
-      },
-      {
-        name: 'bla bla bla',
-        title: 'dolore magna aliqua. Ut enim a',
-        website: '',
-        imgs: [
-          'box3.png'
-        ]
-      },
-      {
-        name: 'bla bla bla',
-        title: 'dolore magna aliqua. Ut enim a',
-        website: '',
-        imgs: [
-          'box3.png'
-        ]
-      },
-    ]
+    selectedProjectIndex: null,
+    selectedImageIndex: 0
   }),
 
-  created: function() {
-    console.log(this.projects);
+  methods: {
+    selectProject: function(index) {
+      this.selectedProjectIndex = index;
+      this.selectedImageIndex = 0;
+    }
   }
+
 }
 </script>
